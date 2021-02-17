@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Paymentsense.Coding.Challenge.Api.Services;
+using Paymentsense.Coding.Challenge.Api.Services.Interfaces;
+using System.Net.Http;
 
 namespace Paymentsense.Coding.Challenge.Api
 {
@@ -19,6 +22,10 @@ namespace Paymentsense.Coding.Challenge.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddTransient<ICountry, Country>();
+            services.AddTransient<HttpClient, HttpClient>();
+
             services.AddHealthChecks();
             services.AddCors(options =>
             {
