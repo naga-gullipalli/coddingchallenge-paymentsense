@@ -13,10 +13,8 @@ namespace Paymentsense.Coding.Challenge.Api.Models
         public int? Population { get; set; }
         public string Capital { get; set; }
         public List<string> Timezones { get; set; }
-
-        public List<IDictionary<string, string>> Currencies { get; set; }
-        public List<IDictionary<string, string>> Languages { get; set; }
-
+        public List<CurrencyDto> Currencies { get; set; }
+        public List<LanguageDto> Languages { get; set; }
         public List<string> Borders { get; set; }
     }
 }

@@ -1,1 +1,37 @@
-<p>country-detail works!</p>
+<div *ngIf="country">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <div>
+                    <strong>Name</strong>
+                    <p>{{country.name}}</p>
+                </div>
+                <div>
+                    <strong>Population</strong>
+                    <p>{{country.population}}</p>
+                </div>
+                <div>
+                    <strong>Capital City</strong>
+                    <p>{{country.capital}}</p>
+                </div>
+                <div>
+                    <strong>TimeZones</strong>
+                    <div *ngFor="let timezone of country.timezones">{{timezone}}</div>
+                </div>
+                <div>
+                    <strong>Currencies</strong>
+                    <div *ngFor="let currency of country.currencies">Code: {{currency.code}}, Name: {{currency.name}}, Symbol: {{currency.symbol}}</div>
+                </div>
+                <div>
+                    <strong>Language</strong>
+                    <div *ngFor="let language of country.languages">iso639_1: {{language.iso639_1}}, iso639_2: {{language.iso639_2}}, Name: {{language.name}}, Native Name: {{language.nativeName}}</div>
+                </div>
+                <div>
+                    <strong>Border Countries</strong>
+                    <div *ngFor="let border of country.borders">{{border}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

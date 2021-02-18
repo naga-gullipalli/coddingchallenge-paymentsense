@@ -9,5 +9,6 @@ namespace Paymentsense.Coding.Challenge.Api.Services.Interfaces
     public interface ICountry
     {
         public Task<IEnumerable<CountryDto>> GetCountries();
+        public Task<CountryDto> GetCountrybyName(string countryName);
     }
 }

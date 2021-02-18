@@ -5,11 +5,12 @@ using Paymentsense.Coding.Challenge.Api.Services.Interfaces;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Paymentsense.Coding.Challenge.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/[controller]")]
     public class PaymentsenseCodingChallengeController : ControllerBase
     {
         private readonly ICountry _country;
@@ -40,6 +41,22 @@ namespace Paymentsense.Coding.Challenge.Api.Controllers
                 return NotFound();
             }
             return Ok(countries);           
+        }
+
+
+        [Route("[action]/{countryName}")]
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CountryDto), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<CountryDto>> GetCountrybyName(string countryName)
+        {
+            var country = await _country.GetCountrybyName(countryName);
+            if (country == null)
+            {
+                _logger.LogError("Country not found.");
+                return NotFound();
+            }
+            return Ok(country);
         }
     }
 }

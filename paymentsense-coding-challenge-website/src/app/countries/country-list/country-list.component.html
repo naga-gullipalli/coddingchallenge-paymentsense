@@ -1,6 +1,12 @@
 <div class="row">
     <div class="col-2">
-            <p *ngFor="let country of countries">{{country.name}}</p>
-
+        <ul class="list-inline member-icons animate">
+            <li class="list-inline-item" *ngFor="let country of countries$ | async">
+                <button routerLink='/countries/{{country.name}}' class="btn btn-primary">
+                    <i class="fa fa-user"> {{country.name}}</i>
+                </button>
+           
+            </li>
+        </ul>
     </div>
 </div>
