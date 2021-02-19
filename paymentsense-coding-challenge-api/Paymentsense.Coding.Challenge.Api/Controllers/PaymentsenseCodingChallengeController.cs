@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
+using Paymentsense.Coding.Challenge.Api.Helpers;
+using Paymentsense.Coding.Challenge.Api.Extensions;
+using System;
 
 namespace Paymentsense.Coding.Challenge.Api.Controllers
 {
@@ -32,15 +35,24 @@ namespace Paymentsense.Coding.Challenge.Api.Controllers
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(IEnumerable<CountryDto>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<CountryDto>>> GetCountries()
+        public async Task<ActionResult<IEnumerable<CountryDto>>> GetCountries([FromQuery]CountryParams countryParams)
         {
-           var countries =  await _country.GetCountries();
-            if (countries == null)
+            PagedList<CountryDto> countries = null;
+            try
             {
-                _logger.LogError("Countries not found.");
-                return NotFound();
+                countries =  await _country.GetCountries(countryParams);
+                Response.AddPaginationHeader(countries.CurrentPage, countries.PageSize, countries.TotalCount, countries.TotalPages);
+                if (countries == null)
+                {
+                    _logger.LogError("Countries not found.");
+                    return NotFound();
+                }               
             }
-            return Ok(countries);           
+            catch (Exception)
+            {
+                //Log exception
+            }
+            return Ok(countries);
         }
 
 
@@ -50,11 +62,19 @@ namespace Paymentsense.Coding.Challenge.Api.Controllers
         [ProducesResponseType(typeof(CountryDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<CountryDto>> GetCountrybyName(string countryName)
         {
-            var country = await _country.GetCountrybyName(countryName);
-            if (country == null)
+            CountryDto country = null;
+            try
             {
-                _logger.LogError("Country not found.");
-                return NotFound();
+                country = await _country.GetCountrybyName(countryName);
+                if (country == null)
+                {
+                    _logger.LogError("Country not found.");
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                //Log exception
             }
             return Ok(country);
         }

@@ -1,10 +1,14 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Country } from '../model/country';
+import { PaginatedResult } from '../model/pagination';
+import { UserParams } from '../model/userParams';
+
+
 
 
 @Injectable({
@@ -15,22 +19,61 @@ export class CountriesService {
   constructor(private httpClient: HttpClient) {}
   baseUrl = environment.apiUrl + 'api/v1/';
   countries: Country[] = [];
+  countryCache = new Map();
 
-  public getCountries(): Observable<Country[]> {
-    if(this.countries.length >0) return of(this.countries);
-    return this.httpClient.get<Country[]>(this.baseUrl + 'PaymentsenseCodingChallenge/GetCountries').pipe(
-      map(countries => {
-        this.countries = countries;
-        return countries;
+  public getCountries(userParams: UserParams) {
+    var response = this.countryCache.get(Object.values(userParams).join('-'));
+    if(response){
+      return of(response);
+    }
+
+    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize)
+
+    return this.getPaginatedResult<Country[]>(this.baseUrl + 'PaymentsenseCodingChallenge/GetCountries', params).
+    pipe(
+      map(response => {
+        this.countryCache.set(Object.values(userParams).join('-'), response);
+        return response;
+      })
+    )
+  }
+
+  
+
+  public getCountry(countryName: string) {
+    const country = [...this.countryCache.values()]
+    .reduce((arr, elem) => arr.concat(elem.result), [])
+    .find((country: Country) => country.name === countryName);
+
+    if(country){
+      return of(country);
+    }
+
+     return this.httpClient.get<Country>(this.baseUrl + 'PaymentsenseCodingChallenge/GetCountrybyName/' + countryName);
+  }
+
+
+  private getPaginatedResult<T>(url, params) {
+    const  paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
+    return this.httpClient.get<T>(url, { observe: 'response', params }).pipe(
+      map(response => {
+        paginatedResult.result = response.body;
+        if (response.headers.get('Pagination') != null) {
+          paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
+        }
+        return paginatedResult;
       }),
       catchError(this.handleError)
     );
   }
 
-  public getCountry(countryName: string) {
-    const country = this.countries.find(x => x.name === countryName);
-    if(country !== undefined) return of(country);
-    return this.httpClient.get<Country>(this.baseUrl + 'PaymentsenseCodingChallenge/GetCountrybyName/' + countryName);
+  private getPaginationHeaders(pageNumber?: number, pageSize?: number)
+  {
+      let params = new HttpParams();
+
+      params = params.append('pageNumber', pageNumber.toString());
+      params = params.append('pageSize', pageSize.toString());
+      return params;
   }
 
   private handleError(err: HttpErrorResponse) {

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,6 +12,7 @@ import { NavComponent } from './nav/nav.component';
 import { CountryListComponent } from './countries/country-list/country-list.component';
 import { CountryDetailComponent } from './countries/country-detail/country-detail.component';
 import { HomeComponent } from './home/home.component';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 
 
@@ -24,10 +26,12 @@ import { HomeComponent } from './home/home.component';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    PaginationModule.forRoot()
   ],
   providers: [PaymentsenseCodingChallengeApiService],
   bootstrap: [AppComponent]

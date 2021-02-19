@@ -1,12 +1,30 @@
 <div class="row">
-    <div class="col-2">
-        <ul class="list-inline member-icons animate">
-            <li class="list-inline-item" *ngFor="let country of countries$ | async">
-                <button routerLink='/countries/{{country.name}}' class="btn btn-primary">
-                    <i class="fa fa-user"> {{country.name}}</i>
-                </button>
-           
-            </li>
-        </ul>
+    <div class="col-6">
+        <table>
+            <tr *ngFor="let country of countries">
+                <td> 
+                    <img src="{{country.flag}}" style="width:40px;height:30px;">
+                </td>
+                <td class="col-4">
+                    <button routerLink='/countries/{{country.name}}' class="btn btn-primary">
+                        <i class="fa fa-user"> {{country.name}}</i>
+                    </button>         
+                </td>
+            </tr>
+        </table>
     </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination">
+    <pagination 
+            [boundaryLinks]="true" 
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            previousText="&lsaquo;" 
+            nextText="&rsaquo;" 
+            firstText="&laquo;" 
+            lastText="&raquo;">     
+    </pagination>
 </div>

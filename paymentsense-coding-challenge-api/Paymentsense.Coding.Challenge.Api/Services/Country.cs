@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Linq;
+using Paymentsense.Coding.Challenge.Api.Helpers;
 
 namespace Paymentsense.Coding.Challenge.Api.Services
 {
@@ -20,24 +21,27 @@ namespace Paymentsense.Coding.Challenge.Api.Services
             _httpclient = httpclient;
         }
 
-        public async Task<IEnumerable<CountryDto>> GetCountries()
+        public async Task<PagedList<CountryDto>> GetCountries(CountryParams countryParams)
         {
-            List<CountryDto> countries = null;
+           PagedList<CountryDto> result = null;
             try
             {
                 var options = GetCaseSensitiveOption();
                 var streamTask = GetJsonStream();
-                countries = await JsonSerializer.DeserializeAsync<List<CountryDto>>(await streamTask, options);
+                var countries = await JsonSerializer.DeserializeAsync<List<CountryDto>>(await streamTask, options);
+
+                result = PagedList<CountryDto>.Create(countries, countryParams.PageNumber, countryParams.PageSize);
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Log exception
             }
-            return countries;
+            return result;
         }
 
         /// <summary>
-        /// TODO: try/catch
+        /// 
         /// </summary>
         /// <param name="countryName"></param>
         /// <returns></returns>
@@ -51,7 +55,7 @@ namespace Paymentsense.Coding.Challenge.Api.Services
                 var countries = await JsonSerializer.DeserializeAsync<List<CountryDto>>(await streamTask, options);
                 country = countries.Where(a => a.Name == countryName).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Log exception
             }
