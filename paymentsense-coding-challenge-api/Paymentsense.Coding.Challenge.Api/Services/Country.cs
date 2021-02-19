@@ -10,15 +10,21 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Linq;
 using Paymentsense.Coding.Challenge.Api.Helpers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Paymentsense.Coding.Challenge.Api.Services
 {
     public class Country : ICountry
     {
         private readonly HttpClient _httpclient;
-        public Country(HttpClient httpclient)
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<Country> _logger;
+        public Country(HttpClient httpclient, IConfiguration configuration, ILogger<Country> logger)
         {
             _httpclient = httpclient;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<PagedList<CountryDto>> GetCountries(CountryParams countryParams)
@@ -63,17 +69,20 @@ namespace Paymentsense.Coding.Challenge.Api.Services
         }
 
         /// <summary>
-        /// TODO: hard coded string needs to be moved
+        /// calls external api and gets steam back
         /// </summary>
         /// <returns></returns>
         private Task<Stream> GetJsonStream()
         {
             _httpclient.DefaultRequestHeaders.Accept.Clear();
             _httpclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            return _httpclient.GetStreamAsync("https://restcountries.eu/rest/v2/all");
+            return _httpclient.GetStreamAsync(_configuration.GetValue<string>("CountryAPI"));
         }
 
+        /// <summary>
+        /// specifies camel case options for DTO
+        /// </summary>
+        /// <returns></returns>
         private JsonSerializerOptions GetCaseSensitiveOption()
         {
             var options = new JsonSerializerOptions();
