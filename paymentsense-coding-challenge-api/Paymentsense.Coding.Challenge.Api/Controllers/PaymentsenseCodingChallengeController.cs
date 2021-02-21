@@ -40,13 +40,13 @@ namespace Paymentsense.Coding.Challenge.Api.Controllers
             PagedList<CountryDto> countries = null;
             try
             {
-                countries =  await _country.GetCountries(countryParams);
-                Response.AddPaginationHeader(countries.CurrentPage, countries.PageSize, countries.TotalCount, countries.TotalPages);
+                countries =  await _country.GetCountries(countryParams);               
                 if (countries == null)
                 {
                     _logger.LogError("Countries not found.");
                     return NotFound();
-                }               
+                }
+                Response.AddPaginationHeader(countries.CurrentPage, countries.PageSize, countries.TotalCount, countries.TotalPages);
             }
             catch (Exception)
             {

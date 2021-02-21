@@ -74,5 +74,93 @@ namespace Paymentsense.Coding.Challenge.Api.Tests.Controllers
             Assert.Equal(headerValue, headerResult);
 
         }
+
+        [Fact]
+        public void GetCountries_ReturnsNotFoundResponse()
+        {
+            CountryParams countryParams = new CountryParams();
+            var httpContextMock = new DefaultHttpContext(); //mock a http context
+
+            var countryInterfaceMock = new Mock<ICountry>();
+            var loggerInterfaceMock = new Mock<ILogger<PaymentsenseCodingChallengeController>>();
+
+            countryInterfaceMock.Setup(a => a.GetCountries(It.IsAny<CountryParams>())).Returns(Task.FromResult((PagedList<CountryDto>)null));
+
+            var controller = new PaymentsenseCodingChallengeController(countryInterfaceMock.Object, loggerInterfaceMock.Object)
+            {
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = httpContextMock
+                }
+            };
+
+            var result = controller.GetCountries(countryParams).Result;
+
+            NotFoundResult finalResult = result.Result as NotFoundResult;
+            string headerResult = httpContextMock.Response.Headers["Pagination"];
+
+            (result.Result as NotFoundResult).StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            Assert.Null(headerResult);
+
+        }
+
+
+        [Fact]
+        public void GetCountrybyName_ReturnsExpectedResponse()
+        {
+            CountryParams countryParams = new CountryParams();
+            var httpContextMock = new DefaultHttpContext(); //mock a http context
+
+            var countryInterfaceMock = new Mock<ICountry>();
+            var loggerInterfaceMock = new Mock<ILogger<PaymentsenseCodingChallengeController>>();
+
+            countryInterfaceMock.Setup(a => a.GetCountrybyName(It.IsAny<string>())).Returns(Task.FromResult(new CountryDto()));
+
+
+            var controller = new PaymentsenseCodingChallengeController(countryInterfaceMock.Object, loggerInterfaceMock.Object)
+            {
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = httpContextMock
+                }
+            };
+            string countryName = "United Kingdom";
+            var result = controller.GetCountrybyName(countryName).Result;
+
+            CountryDto finalResult = (CountryDto)((result.Result as OkObjectResult).Value);
+            
+ 
+            (result.Result as OkObjectResult).StatusCode.Should().Be(StatusCodes.Status200OK);
+            Assert.NotNull(finalResult);
+            Assert.IsType< CountryDto>(finalResult);
+        }
+
+        [Fact]
+        public void GetCountrybyName_ReturnsNotFoundResponse()
+        {
+            CountryParams countryParams = new CountryParams();
+            var httpContextMock = new DefaultHttpContext(); //mock a http context
+
+            var countryInterfaceMock = new Mock<ICountry>();
+            var loggerInterfaceMock = new Mock<ILogger<PaymentsenseCodingChallengeController>>();
+
+            countryInterfaceMock.Setup(a => a.GetCountrybyName(It.IsAny<string>())).Returns(Task.FromResult((CountryDto)null));
+
+
+            var controller = new PaymentsenseCodingChallengeController(countryInterfaceMock.Object, loggerInterfaceMock.Object)
+            {
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = httpContextMock
+                }
+            };
+            string countryName = "United Kingdom";
+            var result = controller.GetCountrybyName(countryName).Result;
+
+            NotFoundResult finalResult = result.Result as NotFoundResult;
+
+            (result.Result as NotFoundResult).StatusCode.Should().Be(StatusCodes.Status404NotFound);
+
+        }
     }
 }
