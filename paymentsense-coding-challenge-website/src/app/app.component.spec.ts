@@ -1,5 +1,8 @@
+import { RouterTestingModule } from '@angular/router/testing';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { NavComponent } from './nav/nav.component';
 
 
 describe('TestComponent', () => {
@@ -8,7 +11,11 @@ describe('TestComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppComponent ]
+      imports: [
+                    RouterTestingModule,
+                    FontAwesomeModule
+                  ],
+      declarations: [ AppComponent, NavComponent ]
     })
     .compileComponents();
   }));
