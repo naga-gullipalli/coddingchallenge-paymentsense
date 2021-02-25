@@ -7,6 +7,13 @@ import { Country } from 'src/app/model/country';
 import { of } from 'rxjs';
 import { CountriesService } from 'src/app/services/countries.service';
 import { UserParams } from 'src/app/model/userParams';
+import { FormsModule } from '@angular/forms';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+
+
+
+
 
 
 
@@ -18,10 +25,14 @@ describe('CountryListComponent', () => {
     let mockCountriesService;
     let paginatedResult: PaginatedResult<Country> = new PaginatedResult<Country>();
     let paginate;
-    let Country;
+    let country;
     let userParams = new UserParams();
+    let fixture: ComponentFixture<CountryListComponent>;
+
 
     beforeEach(async(() => {
+ 
+          
         paginate = 
         {
             currentPage: 1,
@@ -31,76 +42,93 @@ describe('CountryListComponent', () => {
         }
 
 
-        Country = [
+        country = [
             {  
-                name: "uk", flag: "uk flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"GBP", name: "pound", symbol: "£" }],
+                name: "uk", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"GBP", name: "pound", symbol: "£" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "us", flag: "us flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"USD", name: "dollar", symbol: "$" }],
+                name: "us", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"USD", name: "dollar", symbol: "$" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "germany", flag: "ger flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Franc", name: "euro", symbol: "£" }],
+                name: "germany", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Franc", name: "euro", symbol: "£" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "India", flag: "India flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"India", name: "Rupee", symbol: "R" }],
+                name: "India", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"India", name: "Rupee", symbol: "R" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "France", flag: "France flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"France", name: "euro", symbol: "£" }],
+                name: "France", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"France", name: "euro", symbol: "£" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "Canada", flag: "Canada flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Canada", name: "dollar", symbol: "$" }],
+                name: "Canada", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Canada", name: "dollar", symbol: "$" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "Australia", flag: "Australia flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Australia", name: "dollar", symbol: "$" }],
+                name: "Australia", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Australia", name: "dollar", symbol: "$" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "Srilanka", flag: "Srilanka flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Srilanka", name: "Rupee", symbol: "R" }],
+                name: "Srilanka", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Srilanka", name: "Rupee", symbol: "R" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "Nepal", flag: "Nepal flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Nepal", name: "Rupee", symbol: "R" }],
+                name: "Nepal", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Nepal", name: "Rupee", symbol: "R" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "Japan", flag: "Japan flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Japan", name: "Yen", symbol: "Y" }],
+                name: "Japan", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Japan", name: "Yen", symbol: "Y" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             },
             {  
-                name: "South Korea", flag: "South Korea flag", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"SouthKorea", name: "Yen", symbol: "Y" }],
+                name: "South Korea", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"SouthKorea", name: "Yen", symbol: "Y" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
             }
         ]
         paginatedResult.pagination = paginate;
-        paginatedResult.result = Country;
+        paginatedResult.result = country;
 
-        mockCountriesService = jasmine.createSpyObj(['getCountries'])
-       
-        component = new CountryListComponent(mockCountriesService);
+        mockCountriesService = jasmine.createSpyObj(['getCountries']);
 
-      }));
+        TestBed.configureTestingModule({
+            imports: [
+              RouterTestingModule.withRoutes([
+              ]),
+              FormsModule,
+              FontAwesomeModule,
+              PaginationModule.forRoot()
+            ],
+            declarations: [
+              CountryListComponent
+            ],
+            providers: [
+                { provide: CountriesService, useValue: mockCountriesService}
+            ]
+           // schemas:[NO_ERRORS_SCHEMA]
+          }).compileComponents();
+  
+          fixture = TestBed.createComponent(CountryListComponent);
+  
+    }));
 
       describe('loadcountries', () => {
       it('should call the getCountries', () => {
           mockCountriesService.getCountries.and.returnValue(of(paginatedResult));
-          component.loadCountries();
+          fixture.detectChanges();
         
          expect(mockCountriesService.getCountries).toHaveBeenCalledWith(userParams);
       });
