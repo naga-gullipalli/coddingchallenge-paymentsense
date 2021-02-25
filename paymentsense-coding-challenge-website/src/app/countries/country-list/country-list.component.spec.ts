@@ -10,6 +10,7 @@ import { UserParams } from 'src/app/model/userParams';
 import { FormsModule } from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 
 
@@ -92,11 +93,6 @@ describe('CountryListComponent', () => {
                 name: "Japan", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"Japan", name: "Yen", symbol: "Y" }],
                 languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
                 borders: ["border 1", "border 2"]
-            },
-            {  
-                name: "South Korea", flag: "https://restcountries.eu/data/col.svg", population: 1234, capital: "london", timezones: ["GMT+1", "GMT-1"], currencies: [ { code:"SouthKorea", name: "Yen", symbol: "Y" }],
-                languages: [{ iso639_1: "iso6391", iso639_2: "iso6392", name: "isoname", nativeName: "isonativename" }], 
-                borders: ["border 1", "border 2"]
             }
         ]
         paginatedResult.pagination = paginate;
@@ -132,6 +128,21 @@ describe('CountryListComponent', () => {
         
          expect(mockCountriesService.getCountries).toHaveBeenCalledWith(userParams);
       });
+
+      it('should create ten tr per page', () => {
+            mockCountriesService.getCountries.and.returnValue(of(paginatedResult));
+            fixture.detectChanges();
+        
+            expect(fixture.debugElement.queryAll(By.css('tr')).length).toBe(10);
+        });
+
+        
+      it('should create six li for page numbers', () => {
+            mockCountriesService.getCountries.and.returnValue(of(paginatedResult));
+            fixture.detectChanges();
+      
+            expect(fixture.debugElement.queryAll(By.css('li')).length).toBe(6);
+        });
     });
 
 });
